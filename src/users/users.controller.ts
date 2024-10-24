@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpException,
@@ -18,6 +19,7 @@ import { Connection } from 'src/common/constants/connection';
 import { User } from './users.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { UpdateUserDTO } from './dto/update-user-dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('users')
 export class UsersController {
@@ -32,9 +34,23 @@ export class UsersController {
   }
 
   @Get() // GET /users or /users?role=value
-  findAll(@Query('role') role?: UserRole): Promise<User[]> {
+  findAll(
+    @Query('role')
+    role?: UserRole,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe)
+    page: number = 1,
+    @Query('limit', new DefaultValuePipe(2), ParseIntPipe)
+    limit: number = 2,
+  ): Promise<Pagination<User>> {
     try {
-      return this.usersService.findAll(role);
+      limit = limit > 100 ? 100 : limit;
+      return this.usersService.paginate(
+        {
+          page,
+          limit,
+        },
+        role,
+      );
     } catch (error) {
       throw new HttpException(
         'server error',

@@ -4,6 +4,11 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDTO } from './dto/update-user-dto';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 //     {
@@ -12,23 +17,23 @@ import { UpdateUserDTO } from './dto/update-user-dto';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepositry: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
   private users = [];
 
   findAll(role?: UserRole): Promise<User[]> {
     if (role) {
-      return this.userRepositry.find({
+      return this.userRepository.find({
         where: {
           role,
         },
       });
     }
-    return this.userRepositry.find();
+    return this.userRepository.find();
   }
 
   findOne(id: number): Promise<User> {
-    const user = this.userRepositry.findOneBy({ id });
+    const user = this.userRepository.findOneBy({ id });
 
     return user;
   }
@@ -40,14 +45,29 @@ export class UsersService {
     user.dateOfBirth = userDTO.dateOfBirth;
     user.role = userDTO.role;
 
-    return await this.userRepositry.save(user);
+    return await this.userRepository.save(user);
   }
 
   update(id: number, updatedUser: UpdateUserDTO): Promise<UpdateResult> {
-    return this.userRepositry.update(id, updatedUser);
+    return this.userRepository.update(id, updatedUser);
   }
 
   delete(id: number): Promise<DeleteResult> {
-    return this.userRepositry.delete(id);
+    return this.userRepository.delete(id);
+  }
+
+  async paginate(
+    options: IPaginationOptions,
+    role?: UserRole,
+  ): Promise<Pagination<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    if (role) {
+      queryBuilder.where('user.role = :role', { role });
+    }
+
+    queryBuilder.orderBy('user.id', 'ASC');
+
+    return paginate<User>(queryBuilder, options);
   }
 }

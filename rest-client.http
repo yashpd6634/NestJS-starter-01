@@ -5,7 +5,7 @@ GET http://localhost:3000
 GET http://localhost:3000/users
 
 ###
-GET http://localhost:3000/users?role=ENGINEER
+GET http://localhost:3000/users?role=ENGINEER&page=1&limit=1
 
 ###
 GET http://localhost:3000/users/2
