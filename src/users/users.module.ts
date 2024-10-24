@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { connection } from 'src/common/constants/connection';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users.entity';
 
 const mockUsersService = {
   findAll() {
@@ -16,6 +18,7 @@ const mockUsersService = {
 };
 
 @Module({
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [
     //standard provider

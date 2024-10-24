@@ -1,90 +1,53 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { UserRole } from './dto/create-user-dto';
+import { CreateUserDTO, UserRole } from './dto/create-user-dto';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { User } from './users.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateUserDTO } from './dto/update-user-dto';
 
 @Injectable()
 //     {
 //   scope: Scope.TRANSIENT,
 // }
 export class UsersService {
-  private users = [
-    {
-      id: 1,
-      name: 'Leanne Graham',
-      email: 'Sincere@april.biz',
-      role: 'INTERN',
-    },
-    {
-      id: 2,
-      name: 'Ervin Howell',
-      email: 'Shanna@melissa.tv',
-      role: 'INTERN',
-    },
-    {
-      id: 3,
-      name: 'Clementine Bauch',
-      email: 'Nathan@yesenia.net',
-      role: 'ENGINEER',
-    },
-    {
-      id: 4,
-      name: 'Patricia Lebsack',
-      email: 'Julianne.OConner@kory.org',
-      role: 'ENGINEER',
-    },
-    {
-      id: 5,
-      name: 'Chelsey Dietrich',
-      email: 'Lucio_Hettinger@annie.ca',
-      role: 'ADMIN',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private userRepositry: Repository<User>,
+  ) {}
+  private users = [];
 
-  findAll(role?: UserRole) {
+  findAll(role?: UserRole): Promise<User[]> {
     if (role) {
-      return this.users.filter((user) => user.role === role);
+      return this.userRepositry.find({
+        where: {
+          role,
+        },
+      });
     }
-    return this.users;
+    return this.userRepositry.find();
   }
 
-  findOne(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  findOne(id: number): Promise<User> {
+    const user = this.userRepositry.findOneBy({ id });
 
     return user;
   }
 
-  create(user: { name: string; email: string; role: UserRole }) {
-    const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
-    const newUser = {
-      id: usersByHighestId[0].id + 1,
-      ...user,
-    };
-    this.users.push(newUser);
-    return newUser;
+  async create(userDTO: CreateUserDTO): Promise<User> {
+    const user = new User();
+    user.name = userDTO.name;
+    user.email = userDTO.email;
+    user.dateOfBirth = userDTO.dateOfBirth;
+    user.role = userDTO.role;
+
+    return await this.userRepositry.save(user);
   }
 
-  update(
-    id: number,
-    updatedUser: {
-      name?: string;
-      email?: string;
-      role?: UserRole;
-    },
-  ) {
-    this.users = this.users.map((user) => {
-      if (user.id === id) {
-        return { ...user, ...updatedUser };
-      }
-      return user;
-    });
-
-    return this.findOne(id);
+  update(id: number, updatedUser: UpdateUserDTO): Promise<UpdateResult> {
+    return this.userRepositry.update(id, updatedUser);
   }
 
-  delete(id: number) {
-    const removedUser = this.findOne(id);
-
-    this.users = this.users.filter((user) => user.id !== id);
-
-    return removedUser;
+  delete(id: number): Promise<DeleteResult> {
+    return this.userRepositry.delete(id);
   }
 }

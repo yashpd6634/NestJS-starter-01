@@ -15,18 +15,20 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-"name": "Gara the sand",
-"email": "gara.sand@mail.com",
-"role": "INTERN"
+"name": "Rock Lee 2",
+"email": "rock.lee@mail.com",
+"role": "ENGINEER",
+"dateOfBirth": "2003-06-15"
 }
 
 ###
-PATCH  http://localhost:3000/users/3
+PATCH  http://localhost:3000/users/4
 Content-Type: application/json
 
 {
+"name": "Clementine",
 "email": "Clementine@mail.com"
 }
 
 ###
-DELETE  http://localhost:3000/users/4
+DELETE  http://localhost:3000/users/3

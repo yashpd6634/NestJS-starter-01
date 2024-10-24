@@ -15,6 +15,9 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDTO, UserRole } from './dto/create-user-dto';
 import { Connection } from 'src/common/constants/connection';
+import { User } from './users.entity';
+import { DeleteResult, UpdateResult } from 'typeorm';
+import { UpdateUserDTO } from './dto/update-user-dto';
 
 @Controller('users')
 export class UsersController {
@@ -29,7 +32,7 @@ export class UsersController {
   }
 
   @Get() // GET /users or /users?role=value
-  findAll(@Query('role') role?: UserRole) {
+  findAll(@Query('role') role?: UserRole): Promise<User[]> {
     try {
       return this.usersService.findAll(role);
     } catch (error) {
@@ -50,30 +53,26 @@ export class UsersController {
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
     id: number,
-  ) {
+  ): Promise<User> {
     return this.usersService.findOne(id);
   }
 
   @Post() // POST /users
-  create(@Body() user: CreateUserDTO) {
+  create(@Body() user: CreateUserDTO): Promise<User> {
     return this.usersService.create(user);
   }
 
   @Patch(':id') // PATCH /users/:id
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body()
-    userUpdate: {
-      name?: string;
-      email?: string;
-      role?: UserRole;
-    },
-  ) {
-    return this.usersService.update(+id, userUpdate);
+    userUpdate: UpdateUserDTO,
+  ): Promise<UpdateResult> {
+    return this.usersService.update(id, userUpdate);
   }
 
   @Delete(':id') // DELETE /users/:id
-  delete(@Param('id') id: string) {
-    return this.usersService.delete(+id);
+  delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
+    return this.usersService.delete(id);
   }
 }

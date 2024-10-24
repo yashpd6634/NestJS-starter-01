@@ -9,12 +9,27 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './common/middleware/logger/logger.middleware';
 import { DevConfigService } from './common/providers/DevConfigService';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { User } from './users/users.entity';
 
 const devConfig = { port: 3000 };
 const proConfig = { port: 4000 };
 
 @Module({
-  imports: [UsersModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      database: 'user-base-nestJS-starter',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'yash1221',
+      entities: [User],
+      synchronize: true,
+    }),
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
@@ -32,6 +47,10 @@ const proConfig = { port: 4000 };
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) {
+    console.log('dbName ', dataSource.driver.database);
+  }
+
   configure(consumer: MiddlewareConsumer) {
     // consumer.apply(LoggerMiddleware).forRoutes('users');
     consumer
