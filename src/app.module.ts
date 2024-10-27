@@ -12,6 +12,9 @@ import { DevConfigService } from './common/providers/DevConfigService';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from './users/users.entity';
+import { Employee } from './employees/employees.entity';
+import { Grouplist } from './grouplists/grouplists.entity';
+import { GrouplistModule } from './grouplists/grouplists.module';
 
 const devConfig = { port: 3000 };
 const proConfig = { port: 4000 };
@@ -25,10 +28,11 @@ const proConfig = { port: 4000 };
       port: 5432,
       username: 'postgres',
       password: 'yash1221',
-      entities: [User],
+      entities: [User, Employee, Grouplist],
       synchronize: true,
     }),
     UsersModule,
+    GrouplistModule,
   ],
   controllers: [AppController],
   providers: [

@@ -5,20 +5,20 @@ GET http://localhost:3000
 GET http://localhost:3000/users
 
 ###
-GET http://localhost:3000/users?role=ENGINEER&page=1&limit=1
+GET http://localhost:3000/users?role=ADMIN&page=1&limit=1
 
 ###
-GET http://localhost:3000/users/2
+GET http://localhost:3000/users/20
 
 ###
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-"name": "Rock Lee 2",
-"email": "rock.lee@mail.com",
-"role": "ENGINEER",
-"dateOfBirth": "2003-06-15"
+"name": "Clementine",
+"email": "Clementine@mail.com",
+"role": "ADMIN",
+"dateOfBirth": "2000-02-19"
 }
 
 ###
@@ -31,4 +31,13 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:3000/users/3
+DELETE  http://localhost:3000/users/4
+
+### Create group
+POST http://localhost:3000/grouplists
+Content-Type: application/json
+
+{
+"name": "My Favourites",
+"ownerId": 20
+}

@@ -1,5 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 import { UserRole } from './dto/create-user-dto';
+import { Grouplist } from 'src/grouplists/grouplists.entity';
+import { Exclude } from 'class-transformer';
+import { Employee } from 'src/employees/employees.entity';
 
 @Entity('users')
 export class User {
@@ -21,4 +34,18 @@ export class User {
 
   @Column('date')
   dateOfBirth: Date;
+
+  @OneToOne(() => Employee, (employee) => employee.user, {onDelete: 'CASCADE'})
+  employee: Employee;
+
+  @ManyToMany(() => Grouplist, (grouplist) => grouplist.users)
+  @JoinTable({
+    name: 'user_groups',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'group_id', referencedColumnName: 'id' },
+  })
+  grouplists: Grouplist[];
+
+  @OneToMany(() => Grouplist, (grouplist) => grouplist.owner)
+  ownedGroups: Grouplist[];
 }

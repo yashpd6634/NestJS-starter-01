@@ -39,8 +39,8 @@ export class UsersController {
     role?: UserRole,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe)
     page: number = 1,
-    @Query('limit', new DefaultValuePipe(2), ParseIntPipe)
-    limit: number = 2,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
+    limit: number = 10,
   ): Promise<Pagination<User>> {
     try {
       limit = limit > 100 ? 100 : limit;

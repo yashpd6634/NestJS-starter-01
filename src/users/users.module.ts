@@ -1,24 +1,15 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { connection } from 'src/common/constants/connection';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users.entity';
-
-const mockUsersService = {
-  findAll() {
-    return [
-      {
-        name: 'Gara the sand',
-        email: 'gara.sand@mail.com',
-        role: 'INTERN',
-      },
-    ];
-  },
-};
+import { Grouplist } from 'src/grouplists/grouplists.entity';
+import { Employee } from 'src/employees/employees.entity';
+import { GrouplistModule } from 'src/grouplists/grouplists.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Grouplist, Employee])],
   controllers: [UsersController],
   providers: [
     //standard provider
@@ -41,5 +32,6 @@ const mockUsersService = {
       useValue: connection,
     },
   ],
+  exports: [UsersService],
 })
 export class UsersModule {}

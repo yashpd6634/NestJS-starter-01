@@ -1,10 +1,13 @@
 import {
+  IsArray,
   IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsString,
 } from 'class-validator';
+import { Grouplist } from 'src/grouplists/grouplists.entity';
 
 export enum UserRole {
   Admin = 'ADMIN',
@@ -29,5 +32,3 @@ export class CreateUserDTO {
   @IsDateString()
   readonly dateOfBirth: Date;
 }
-
-
