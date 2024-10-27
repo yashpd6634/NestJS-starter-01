@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Scope } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Scope, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDTO, UserRole } from './dto/create-user-dto';
 import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { User } from './users.entity';
@@ -11,7 +11,8 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { Grouplist } from 'src/grouplists/grouplists.entity';
 import { Employee } from 'src/employees/employees.entity';
-import { GrouplistService } from 'src/grouplists/grouplists.service';
+import * as bcrypt from 'bcryptjs';
+import { LoginDTO } from 'src/auth/dto/login-dto';
 
 @Injectable()
 //     {
@@ -50,6 +51,14 @@ export class UsersService {
     return user;
   }
 
+  async findOneByEmail(data: LoginDTO): Promise<User> {
+    const user = await this.userRepository.findOneBy({ email: data.email });
+    if (!user) {
+      throw new UnauthorizedException('Could not find user');
+    }
+    return user;
+  }
+
   async create(userDTO: CreateUserDTO): Promise<User> {
     const user = new User();
     user.name = userDTO.name;
@@ -58,13 +67,18 @@ export class UsersService {
     user.role = userDTO.role;
     user.grouplists = [];
     user.ownedGroups = [];
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(userDTO.password, salt);
 
     const employee = this.employeeRepository.create();
     await this.employeeRepository.save(employee);
 
     user.employee = employee;
 
-    return this.userRepository.save(user);
+    const resUser = await this.userRepository.save(user);
+    delete resUser.password;
+
+    return resUser;
   }
 
   async update(id: number, updatedUser: UpdateUserDTO): Promise<UpdateResult> {

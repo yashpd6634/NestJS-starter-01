@@ -73,10 +73,10 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post() // POST /users
-  create(@Body() user: CreateUserDTO): Promise<User> {
-    return this.usersService.create(user);
-  }
+  // @Post() // POST /users
+  // create(@Body() user: CreateUserDTO): Promise<User> {
+  //   return this.usersService.create(user);
+  // }
 
   @Patch(':id') // PATCH /users/:id
   update(

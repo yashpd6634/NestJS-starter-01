@@ -15,6 +15,7 @@ import { User } from './users/users.entity';
 import { Employee } from './employees/employees.entity';
 import { Grouplist } from './grouplists/grouplists.entity';
 import { GrouplistModule } from './grouplists/grouplists.module';
+import { AuthModule } from './auth/auth.module';
 
 const devConfig = { port: 3000 };
 const proConfig = { port: 4000 };
@@ -33,6 +34,7 @@ const proConfig = { port: 4000 };
     }),
     UsersModule,
     GrouplistModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

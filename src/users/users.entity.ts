@@ -22,7 +22,7 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column({
@@ -35,7 +35,13 @@ export class User {
   @Column('date')
   dateOfBirth: Date;
 
-  @OneToOne(() => Employee, (employee) => employee.user, {onDelete: 'CASCADE'})
+  @Column()
+  @Exclude()
+  password: string;
+
+  @OneToOne(() => Employee, (employee) => employee.user, {
+    onDelete: 'CASCADE',
+  })
   employee: Employee;
 
   @ManyToMany(() => Grouplist, (grouplist) => grouplist.users)

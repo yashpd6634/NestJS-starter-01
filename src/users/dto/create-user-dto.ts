@@ -31,4 +31,8 @@ export class CreateUserDTO {
   @IsNotEmpty()
   @IsDateString()
   readonly dateOfBirth: Date;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 }

@@ -11,14 +11,24 @@ GET http://localhost:3000/users?role=ADMIN&page=1&limit=1
 GET http://localhost:3000/users/20
 
 ###
-POST http://localhost:3000/users
+POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-"name": "Clementine",
-"email": "Clementine@mail.com",
-"role": "ADMIN",
-"dateOfBirth": "2000-02-19"
+"name": "Gara the sand",
+"email": "gara.sand@mail.com",
+"role": "ENGINEER",
+"dateOfBirth": "2003-01-09",
+"password": "123456"
+}
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json 
+
+{
+    "email": "Clementine@mail.com",
+    "password": "123456"
 }
 
 ###
