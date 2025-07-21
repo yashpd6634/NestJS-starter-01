@@ -39,9 +39,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @OneToOne(() => Employee, (employee) => employee.user, {
-    onDelete: 'CASCADE',
-  })
+  @OneToOne(() => Employee, (employee) => employee.user)
   employee: Employee;
 
   @ManyToMany(() => Grouplist, (grouplist) => grouplist.users)

@@ -83,7 +83,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body()
     userUpdate: UpdateUserDTO,
-  ): Promise<UpdateResult> {
+  ): Promise<User> {
     return this.usersService.update(id, userUpdate);
   }
 

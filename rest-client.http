@@ -8,16 +8,16 @@ GET http://localhost:3000/users
 GET http://localhost:3000/users?role=ADMIN&page=1&limit=1
 
 ###
-GET http://localhost:3000/users/20
+GET http://localhost:3000/users/5
 
 ###
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-"name": "Gara the sand",
-"email": "gara.sand@mail.com",
-"role": "ENGINEER",
+"name": "admin the sand",
+"email": "admin.sand@mail.com",
+"role": "ADMIN",
 "dateOfBirth": "2003-01-09",
 "password": "123456"
 }
@@ -27,21 +27,21 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json 
 
 {
-    "email": "Clementine@mail.com",
+    "email": "admin.sand@mail.com",
     "password": "123456"
 }
 
 ###
-PATCH  http://localhost:3000/users/4
+PATCH  http://localhost:3000/users/2
 Content-Type: application/json
 
 {
-"name": "Clementine",
-"email": "Clementine@mail.com"
+"name": "t1est",
+"email": "garatest@mail.com"
 }
 
 ###
-DELETE  http://localhost:3000/users/4
+DELETE  http://localhost:3000/users/1
 
 ### Create group
 POST http://localhost:3000/grouplists
@@ -49,5 +49,5 @@ Content-Type: application/json
 
 {
 "name": "My Favourites",
-"ownerId": 20
+"ownerId": 8
 }

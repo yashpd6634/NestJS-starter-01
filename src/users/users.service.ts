@@ -1,4 +1,11 @@
-import { forwardRef, Inject, Injectable, Scope, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDTO, UserRole } from './dto/create-user-dto';
 import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import { User } from './users.entity';
@@ -81,30 +88,35 @@ export class UsersService {
     return resUser;
   }
 
-  async update(id: number, updatedUser: UpdateUserDTO): Promise<UpdateResult> {
+  async update(id: number, updatedUser: UpdateUserDTO): Promise<User> {
     const { grouplists, ownedGroups, ...otherUpdates } = updatedUser;
 
-    let groupEntities: Grouplist[] = [];
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['grouplists', 'ownedGroups'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    Object.assign(user, otherUpdates);
+
     if (grouplists) {
-      groupEntities = await this.grouplistRepository.find({
+      const groupEntities = await this.grouplistRepository.find({
         where: { id: In(grouplists) },
       });
+      user.grouplists = groupEntities;
     }
 
-    let ownedGroupEntities: Grouplist[] = [];
     if (ownedGroups) {
-      ownedGroupEntities = await this.grouplistRepository.find({
+      const ownedGroupEntities = await this.grouplistRepository.find({
         where: { id: In(ownedGroups) },
       });
+      user.ownedGroups = ownedGroupEntities;
     }
 
-    const updateData = {
-      ...otherUpdates,
-      grouplists: groupEntities,
-      ownedGroups: ownedGroupEntities,
-    };
-
-    return this.userRepository.update(id, updateData);
+    return this.userRepository.save(user);
   }
 
   delete(id: number): Promise<DeleteResult> {

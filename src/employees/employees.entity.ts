@@ -6,7 +6,7 @@ export class Employee {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.employee)
+  @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
 }

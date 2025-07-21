@@ -28,7 +28,7 @@ const proConfig = { port: 4000 };
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'yash1221',
+      password: 'mysecretpassword',
       entities: [User, Employee, Grouplist],
       synchronize: true,
     }),
